@@ -1,0 +1,59 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String         @id @default(uuid())
+  email         String
+  notifications Notification[] @relation("UserToNotifications")
+  companies     Company[]      @relation("UserToCompanies")
+  events        Event[]        @relation("UserToEvents")
+  paid          Boolean
+}
+
+model Notification {
+  id          String @id @default(uuid())
+  title       String
+  description String
+  date        String
+  mergedData  Json
+  users       User[] @relation("UserToNotifications")
+}
+
+model Company {
+  id          String    @id @default(uuid())
+  name        String
+  position    String
+  salary      String
+  description String
+  comment     String
+  contacts    Contact[] @relation("CompanyToContacts")
+  users       User[]    @relation("UserToCompanies")
+}
+
+model Contact {
+  id        String    @id @default(uuid())
+  name      String
+  contact   String
+  companies Company[] @relation("CompanyToContacts")
+  events    Event[]   @relation("EventToContacts")
+}
+
+model Event {
+  id             String    @id @default(uuid())
+  name           String
+  description    String
+  additionalInfo Json
+  duration       Int
+  date           String
+  time           String
+  acceptTime     Boolean
+  status         String
+  contacts       Contact[] @relation("EventToContacts")
+  users          User[]    @relation("UserToEvents")
+}
