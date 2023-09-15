@@ -1,26 +1,16 @@
-console.log("Try npm run lint/fix!");
+import * as express from 'express';
+import * as cors from 'cors';
+import * as bodyParser from 'body-parser';
+import {envConfig} from './config/envConfig';
+import {extendContextWithDb} from './db';
 
-const longString = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer ut aliquet diam.';
+export const app = express();
 
-const trailing = 'Semicolon'
+app.use(cors());
+app.use(bodyParser.json());
+app.use(extendContextWithDb);
+app.get('/favicon.ico', (_, res) => res.status(204));
 
-			const why={am:'I tabbed?'};
-
-const iWish = "I didn't have a trailing space..."; 
-
-const sicilian = true;;
-
-const vizzini = (!!sicilian) ? !!!sicilian : sicilian;
-
-const re = /foo   bar/;
-
-export function doSomeStuff(withThis: string, andThat: string, andThose: string[]) {
-    //function on one line
-    if(!Boolean(andThose.length)) {return false;}
-    console.log(withThis);
-    console.log(andThat);
-    console.dir(andThose);
-    console.log(longString, trailing, why, iWish, vizzini, re);
-    return;
-}
-// TODO: more examples
+app.listen(envConfig.PORT, () => {
+  console.log(`Strarted on port ${envConfig.PORT}`);
+});
